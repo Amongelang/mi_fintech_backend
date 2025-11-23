@@ -17,6 +17,9 @@ HEADERS = {
 
 def get_access_token():
     """Obtiene un token de acceso de Yapily usando client_id y client_secret."""
+    print("CLIENT_ID:", CLIENT_ID)
+    print("CLIENT_SECRET:", CLIENT_SECRET)
+    
     url = f"{BASE_URL}/oauth/token"
     data = {
         "grant_type": "client_credentials",
@@ -28,6 +31,7 @@ def get_access_token():
         print("Error al obtener token:", response.text)
         return None
     return response.json().get("access_token")
+
 
 
 def get_yapily_banks():
