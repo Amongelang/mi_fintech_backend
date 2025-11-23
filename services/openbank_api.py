@@ -1,27 +1,53 @@
 import os
 import requests
 
+# Base URL de Yapily
 BASE_URL = "https://api.yapily.com"
 
+# Tus credenciales se guardan como variables de entorno
 CLIENT_ID = os.getenv("YAPILY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("YAPILY_CLIENT_SECRET")
 
+# Headers generales
 HEADERS = {
-    "Content-Type": "application/json",
     "Accept": "application/json",
     "user-agent": "MiFintechApp/1.0",
 }
 
+
+def get_access_token():
+    """Obtiene un token de acceso de Yapily usando client_id y client_secret."""
+    url = f"{BASE_URL}/oauth/token"
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
+    }
+    response = requests.post(url, data=data)
+    if response.status_code != 200:
+        print("Error al obtener token:", response.text)
+        return None
+    return response.json().get("access_token")
+
+
 def get_yapily_banks():
     """Lista los bancos disponibles en España mediante Yapily."""
+    token = get_access_token()
+    if not token:
+        return {"error": "No se pudo obtener token"}
+
     url = f"{BASE_URL}/institutions"
-    response = requests.get(url, headers=HEADERS, auth=(CLIENT_ID, CLIENT_SECRET))
-
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/json",
+        "user-agent": "MiFintechApp/1.0",
+    }
+    params = {"country": "ESP"}  # Solo España
+    response = requests.get(url, headers=headers, params=params)
     if response.status_code != 200:
-        return {"error": "No se pudo obtener la lista de bancos"}, response.status_code
+        return {"error": "No se pudo obtener la lista de bancos", "status": response.status_code}
 
-    institutions = response.json().get("data", [])
-    return institutions
+    return response.json().get("data", [])
 
 
 def get_openbank_data():
@@ -29,7 +55,6 @@ def get_openbank_data():
     Función provisional para devolver datos falsos.
     Cuando conectemos a un banco real, se reemplaza por la lógica de Yapily.
     """
-
     fake_account = {
         "name": "Cuenta de prueba",
         "balance": 1000,
@@ -47,5 +72,4 @@ def get_openbank_data():
             }
         ]
     }
-
     return fake_account
