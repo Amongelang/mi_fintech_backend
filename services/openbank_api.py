@@ -1,24 +1,56 @@
-from nordigen import NordigenClient
+# services/openbank_api.py
+import requests
 
-# Tus credenciales Nordigen (regístrate gratis en https://nordigen.com/)
-SECRET_ID = "TU_SECRET_ID"
-SECRET_KEY = "TU_SECRET_KEY"
+# Base URL de GoCardless Open Banking (sandbox / live)
+BASE_URL = "https://api.gocardless.com/openbanking"  # Reemplaza si la doc oficial indica otra
+TOKEN = "live_J4dyY9hEMDoSmtfnRP6JfJUHj_G3d8ixvrSCLe-V"  # Tu token
 
-client = NordigenClient(secret_id=SECRET_ID, secret_key=SECRET_KEY)
+HEADERS = {
+    "Authorization": f"Bearer {TOKEN}",
+    "Content-Type": "application/json"
+}
 
 def get_openbank_data():
-    # 1. Lista de cuentas
-    accounts = client.get_requisitions()  # más adelante, puedes filtrar tu cuenta específica
+    """
+    Función que obtiene los datos de cuentas, saldo y transacciones.
+    De momento devuelve datos simulados, luego puedes reemplazar con
+    llamadas reales a la API de GoCardless/Nordigen.
+    """
+    try:
+        # Ejemplo de llamada real (descomentar cuando tengas endpoints correctos)
+        # resp_accounts = requests.get(f"{BASE_URL}/accounts", headers=HEADERS)
+        # accounts = resp_accounts.json()
+        #
+        # resp_transactions = requests.get(f"{BASE_URL}/transactions", headers=HEADERS)
+        # transactions = resp_transactions.json()
+        #
+        # balance_total = sum([acc["balance"] for acc in accounts])
 
-    # 2. Para simplificar, devolvemos datos de ejemplo
-    # En la práctica se reemplaza por la info real del usuario
-    data = {
-        "balance": 1234.56,
-        "transactions": [
-            {"title": "Sueldo", "amount": 1200.00},
-            {"title": "Supermercado", "amount": -45.50},
-            {"title": "Netflix", "amount": -15.99}
-        ],
-        "name": "OpenBank"
-    }
-    return data
+        # Datos simulados para pruebas
+        accounts = [
+            {
+                "name": "Cuenta de prueba",
+                "balance": 1000,
+                "currency": "EUR"
+            }
+        ]
+        transactions = [
+            {"date": "2025-11-23", "amount": -50, "description": "Gasto de prueba"},
+            {"date": "2025-11-22", "amount": 200, "description": "Ingreso de prueba"}
+        ]
+        total_balance = sum(acc["balance"] for acc in accounts)
+
+        return {
+            "accounts": accounts,
+            "transactions": transactions,
+            "balance": total_balance
+        }
+
+    except Exception as e:
+        # Para no romper el backend si falla algo
+        print(f"Error al obtener datos de OpenBank: {e}")
+        return {
+            "accounts": [],
+            "transactions": [],
+            "balance": 0
+        }
