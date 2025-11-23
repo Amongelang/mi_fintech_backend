@@ -1,5 +1,7 @@
 Flask==2.3.3
-nordigen==1.0.10
+nordigen==1.4.2
 gunicorn==21.2.0
+
+
 
 
