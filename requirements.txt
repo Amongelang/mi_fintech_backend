@@ -1,7 +1,4 @@
 Flask==2.3.3
 nordigen==1.4.2
 gunicorn==21.2.0
-
-
-
-
+requests==2.32.5
