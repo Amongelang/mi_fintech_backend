@@ -1,19 +1,14 @@
 from flask import Flask, jsonify
-from services.openbank_api import get_openbank_data
+from services.openbank_api import get_openbank_data, get_institutions
 
 app = Flask(__name__)
 
-# Página principal para GoCardless
+# Página principal
 @app.route('/')
 def home():
-    return "¡Backend funcionando en localhost:5000!"
+    return "¡Backend funcionando!"
 
-# Callback para GoCardless
-@app.route('/callback')
-def callback():
-    return "¡Callback de GoCardless recibido!"
-
-# Tu ruta actual de datos
+# Ruta para obtener datos falsos de ejemplo
 @app.route("/data")
 def get_data():
     data_openbank = get_openbank_data()
@@ -24,6 +19,11 @@ def get_data():
     }
     return jsonify(result)
 
+# Ruta para listar bancos disponibles en Yapily
+@app.route("/banks")
+def banks():
+    institutions = get_institutions()
+    return jsonify(institutions)
+
 if __name__ == "__main__":
-    # Añadimos host="0.0.0.0" si quieres que ngrok pueda conectarse
     app.run(debug=True, port=5000, host="0.0.0.0")
