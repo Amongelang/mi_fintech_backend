@@ -1,3 +1,4 @@
+# main.py
 from flask import Flask, jsonify
 from services.openbank_api import get_openbank_data, get_yapily_banks
 
@@ -8,18 +9,12 @@ app = Flask(__name__)
 def home():
     return "¡Backend funcionando en localhost:5000!"
 
-# Callback para GoCardless (lo puedes mantener aunque no uses Nordigen)
+# Callback (puedes usarlo más tarde para OAuth o pagos)
 @app.route('/callback')
 def callback():
-    return "¡Callback de GoCardless recibido!"
+    return "¡Callback recibido!"
 
-# Ruta para obtener los bancos disponibles desde Yapily
-@app.route("/banks")
-def banks():
-    banks_list = get_yapily_banks()
-    return jsonify(banks_list)
-
-# Ruta de datos (cuentas y transacciones)
+# Ruta de datos de prueba
 @app.route("/data")
 def get_data():
     data_openbank = get_openbank_data()
@@ -29,6 +24,12 @@ def get_data():
         "transactions": data_openbank['transactions']
     }
     return jsonify(result)
+
+# Ruta para obtener bancos de Yapily
+@app.route("/banks")
+def get_banks():
+    banks = get_yapily_banks()
+    return jsonify(banks)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host="0.0.0.0")
