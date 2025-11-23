@@ -12,7 +12,7 @@ HEADERS = {
     "user-agent": "MiFintechApp/1.0",
 }
 
-def get_institutions():
+def get_yapily_banks():
     """Lista los bancos disponibles en España mediante Yapily."""
     url = f"{BASE_URL}/institutions"
     response = requests.get(url, headers=HEADERS, auth=(CLIENT_ID, CLIENT_SECRET))
