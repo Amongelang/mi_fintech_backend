@@ -26,10 +26,12 @@ def get_data():
     return jsonify(result)
 
 # Ruta para obtener bancos de Yapily
+from services.openbank_api import get_openbank_data, get_yapily_banks
+
 @app.route("/banks")
-def get_banks():
-    banks = get_yapily_banks()
-    return jsonify(banks)
+def banks():
+    return jsonify(get_yapily_banks())
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host="0.0.0.0")
