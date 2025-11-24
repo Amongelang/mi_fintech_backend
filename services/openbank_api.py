@@ -22,7 +22,6 @@ def get_access_token():
     return response.json().get("access_token")
 
 def get_yapily_banks():
-    """Lista los bancos disponibles en España mediante Yapily."""
     token = get_access_token()
     if not token:
         return {"error": "No se pudo obtener token"}
@@ -39,7 +38,6 @@ def get_yapily_banks():
         return {"error": "No se pudo obtener la lista de bancos", "status": response.status_code}
 
     return response.json().get("data", [])
-
 
 def get_openbank_data():
     """
