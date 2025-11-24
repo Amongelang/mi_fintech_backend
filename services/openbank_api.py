@@ -1,38 +1,25 @@
-import os
 import requests
+from requests.auth import HTTPBasicAuth
+import os
 
-# Base URL de Yapily
 BASE_URL = "https://api.yapily.com"
 
-# Tus credenciales se guardan como variables de entorno
 CLIENT_ID = os.getenv("YAPILY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("YAPILY_CLIENT_SECRET")
-
-# Headers generales
-HEADERS = {
-    "Accept": "application/json",
-    "user-agent": "MiFintechApp/1.0",
-}
 
 
 def get_access_token():
     """Obtiene un token de acceso de Yapily usando client_id y client_secret."""
-    print("CLIENT_ID:", CLIENT_ID)
-    print("CLIENT_SECRET:", CLIENT_SECRET)
-    
     url = f"{BASE_URL}/oauth/token"
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET
-    }
-    response = requests.post(url, data=data)
+    payload = {"grant_type": "client_credentials"}
+    
+    response = requests.post(url, json=payload, auth=HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET))
+    
     if response.status_code != 200:
         print("Error al obtener token:", response.text)
         return None
+    
     return response.json().get("access_token")
-
-
 
 def get_yapily_banks():
     """Lista los bancos disponibles en España mediante Yapily."""
